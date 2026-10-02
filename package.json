@@ -1,0 +1,31 @@
+{
+  "name": "@hathq/projection-runtime",
+  "version": "0.10.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "Bounded read-only producer execution and disposable durable projection publication",
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "LICENSE-PREVIOUS"
+  ],
+  "exports": {
+    ".": "./src/runtime.mjs",
+    "./store": "./src/store.mjs"
+  },
+  "dependencies": {
+    "@hathq/projection-contracts": "file:../../../../../../../.artifacts/npm/a3ed9b9cd4e7bde586e156621be33713a464142b9b94bced051f745a5bf9dd26/hathq-projection-contracts-0.10.0.tgz"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zixcel/projection-runtime.git"
+  }
+}
