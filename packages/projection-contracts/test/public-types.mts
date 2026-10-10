@@ -13,3 +13,8 @@ repair(slot, pending, () => source);
 recovery(data, null);
 // @ts-expect-error An asynchronous source read cannot satisfy synchronous rebuild.
 repair(slot, pending, async () => source);
+
+const owner: string = data.lineage.sources[0]!.owner;
+const instant: string | undefined = view.data.temporal?.items[0]?.at;
+const title: string | undefined = view.data.presentation?.[0]?.title;
+void owner; void instant; void title;

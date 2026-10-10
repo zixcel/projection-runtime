@@ -9,7 +9,7 @@ export class ProducerRegistry {
   readonly artifactDigest: string;
 }
 export class ExactSourceReader implements SourceReader {
-  constructor(owners: ReadonlyMap<string, SourceAdapter>);
+  constructor(owners: Map<string, SourceAdapter>);
   acquireExact(refs: readonly import('@hathq/projection-contracts').SourceRef[], options: SourceReadOptions): ReturnType<SourceReader['acquireExact']>;
   release(leaseRefs: readonly string[], holder: string): Promise<void>;
 }
