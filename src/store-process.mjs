@@ -5,11 +5,12 @@ import path from 'node:path'
 import {randomUUID} from 'node:crypto'
 import {validateSnapshot,canonical,produce} from '@hathq/projection-contracts'
 import {bounds,check,clone,hash,shape,token} from './common.mjs'
+import {privateDirectory,privateFile,removeStaleTemporary} from './private-files.mjs'
 const directory=process.argv[2],operation=process.argv[3],image=path.join(directory,'projection.json'),temporary=path.join(directory,'projection.next')
 const MAX=12*1024*1024
 function readBounded(file,max){
   const fd=fs.openSync(file,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW)
-  try{check(fs.fstatSync(fd).isFile()&&fs.fstatSync(fd).size<=max,'ProjectionStoreCorrupt');const bytes=Buffer.alloc(max+1);const n=fs.readSync(fd,bytes,0,max+1,0);check(n<=max,'ProjectionLimitExceeded');return bytes.subarray(0,n)}finally{fs.closeSync(fd)}
+  try{privateFile(fs.fstatSync(fd));check(fs.fstatSync(fd).size<=max,'ProjectionStoreCorrupt');const bytes=Buffer.alloc(max+1);const n=fs.readSync(fd,bytes,0,max+1,0);check(n<=max,'ProjectionLimitExceeded');return bytes.subarray(0,n)}finally{fs.closeSync(fd)}
 }
 function load(){
   const envelope=JSON.parse(readBounded(image,MAX));shape(envelope,['digest','state'])
@@ -24,7 +25,8 @@ function load(){
 function save(s){
   const bytes=JSON.stringify({digest:hash(JSON.stringify(s)),state:s});check(Buffer.byteLength(bytes)<=MAX,'ProjectionLimitExceeded')
   // Same lock covers stale temp cleanup, write/fsync/rename and directory fsync.
-  const fd=fs.openSync(temporary,fs.constants.O_WRONLY|fs.constants.O_CREAT|fs.constants.O_TRUNC|fs.constants.O_NOFOLLOW,0o600)
+  removeStaleTemporary(temporary)
+  const fd=fs.openSync(temporary,fs.constants.O_WRONLY|fs.constants.O_CREAT|fs.constants.O_EXCL|fs.constants.O_NOFOLLOW,0o600)
   try{fs.writeFileSync(fd,bytes);fs.fsyncSync(fd)}finally{fs.closeSync(fd)}
   fs.renameSync(temporary,image);const dir=fs.openSync(directory,'r');try{fs.fsyncSync(dir)}finally{fs.closeSync(dir)}
 }
@@ -46,6 +48,7 @@ try{
   // setpriv installed PDEATHSIG before exec. If the caller died before that
   // installation, its exact parent identity must still reject BEFORE any IO.
   check(Number(process.argv[4])===process.ppid&&process.ppid>1,'ProjectionUnavailable')
+  privateDirectory(directory)
   // The parent bounds all requests; limit stdin independently for adapter callers.
   const chunks=[];let n=0;for await(const b of process.stdin){n+=b.length;check(n<=MAX,'ProjectionLimitExceeded');chunks.push(b)}
   const input=JSON.parse(Buffer.concat(chunks));let s
