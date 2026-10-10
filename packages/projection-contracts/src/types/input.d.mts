@@ -1,4 +1,4 @@
-import type { Item, SourceRef, Unresolved, Relation, Region, Action } from '../client.mjs';
+import type { Item, SourceRef, Unresolved, Relation, Region, Action } from './snapshot.mjs';
 /** Exact producer identity: no request-provided code or implicit latest revision. */
 export interface ProducerIdentity { readonly id: string; readonly version: string; readonly contract: string; readonly configuration: string }
 export interface ProjectionLimits { sources: number; items: number; relations: number; provenance: number; unresolved: number; regions: number; actions: number; snapshotBytes: number }
@@ -7,7 +7,7 @@ export interface ProjectionRequest {
   readonly focus: string; readonly purpose: string; readonly visibilityRef: string; readonly limits: Partial<ProjectionLimits>;
 }
 export interface ExactSource {
-  readonly source: SourceRef; readonly items: readonly Omit<Item, 'sourceRefs'>[];
+  readonly source: SourceRef; readonly items: readonly (Omit<Item, 'sourceRefs' | 'visibility'> & { readonly visibility: 'visible' | 'redacted' | 'omitted' })[];
   readonly unresolved: readonly Omit<Unresolved, 'sourceRefs'>[];
   readonly relations: readonly Omit<Relation, 'sourceRefs'>[]; readonly truncated: boolean;
 }
