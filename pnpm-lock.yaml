@@ -9,30 +9,61 @@ importers:
   .:
     dependencies:
       '@hathq/projection-contracts':
-        specifier: file:../../../../../../../.artifacts/npm/a3ed9b9cd4e7bde586e156621be33713a464142b9b94bced051f745a5bf9dd26/hathq-projection-contracts-0.10.0.tgz
-        version: file:../../../../../../../.artifacts/npm/a3ed9b9cd4e7bde586e156621be33713a464142b9b94bced051f745a5bf9dd26/hathq-projection-contracts-0.10.0.tgz
+        specifier: 0.10.0
+        version: link:packages/projection-contracts
+    devDependencies:
+      '@types/node':
+        specifier: 24.12.0
+        version: 24.12.0
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
+  packages/projection-contracts:
+    dependencies:
+      '@zixcel/interaction':
+        specifier: 0.10.1
+        version: 0.10.1
+      ohash:
+        specifier: 2.0.11
+        version: 2.0.11
+    devDependencies:
+      '@types/node':
+        specifier: 24.12.0
+        version: 24.12.0
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
 
 packages:
 
-  '@hathq/projection-contracts@file:../../../../../../../.artifacts/npm/a3ed9b9cd4e7bde586e156621be33713a464142b9b94bced051f745a5bf9dd26/hathq-projection-contracts-0.10.0.tgz':
-    resolution: {integrity: sha512-1agSoVm9NwM8dkUsJbOQJcDic55U6lLk7i1SUUHfEcBXTn7AsipFIxj3S1KC8+ajw6IHHv7K9UPwjmZxXk38CQ==, tarball: file:../../../../../../../.artifacts/npm/a3ed9b9cd4e7bde586e156621be33713a464142b9b94bced051f745a5bf9dd26/hathq-projection-contracts-0.10.0.tgz}
-    version: 0.10.0
-    engines: {node: '>=22'}
+  '@types/node@24.12.0':
+    resolution: {integrity: sha512-GYDxsZi3ChgmckRT9HPU0WEhKLP08ev/Yfcq2AstjrDASOYCSXeyjDsHg4v5t4jOj7cyDX3vmprafKlWIG9MXQ==}
 
-  '@zixcel/interaction@file:../../../../../../../.artifacts/npm/1c2d6e15a4212e2459887589f3e79781a9902f0ebbf44f12dc76bd75e82efa66/zixcel-interaction-0.10.0.tgz':
-    resolution: {integrity: sha512-3XOHU/VPEGosjHRfEC1DMta6P8s3w6NTum1dzWzOfn2aCK6GoKWzZtjQLWer/YyxwroBZh6vLWVgrDFsk2fEMA==, tarball: file:../../../../../../../.artifacts/npm/1c2d6e15a4212e2459887589f3e79781a9902f0ebbf44f12dc76bd75e82efa66/zixcel-interaction-0.10.0.tgz}
-    version: 0.10.0
+  '@zixcel/interaction@0.10.1':
+    resolution: {integrity: sha512-irtb3FhlM2g13wWlPcroTFCXB36O7a6KS/HqWSGRY7Snys8PA9cO+qTlcdKrzwMQ+xoPHHFPbq/AMuasoTN+bg==}
 
   ohash@2.0.11:
     resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
 
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  undici-types@7.16.0:
+    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
+
 snapshots:
 
-  '@hathq/projection-contracts@file:../../../../../../../.artifacts/npm/a3ed9b9cd4e7bde586e156621be33713a464142b9b94bced051f745a5bf9dd26/hathq-projection-contracts-0.10.0.tgz':
+  '@types/node@24.12.0':
     dependencies:
-      '@zixcel/interaction': file:../../../../../../../.artifacts/npm/1c2d6e15a4212e2459887589f3e79781a9902f0ebbf44f12dc76bd75e82efa66/zixcel-interaction-0.10.0.tgz
-      ohash: 2.0.11
+      undici-types: 7.16.0
 
-  '@zixcel/interaction@file:../../../../../../../.artifacts/npm/1c2d6e15a4212e2459887589f3e79781a9902f0ebbf44f12dc76bd75e82efa66/zixcel-interaction-0.10.0.tgz': {}
+  '@zixcel/interaction@0.10.1': {}
 
   ohash@2.0.11: {}
+
+  typescript@5.9.3: {}
+
+  undici-types@7.16.0: {}

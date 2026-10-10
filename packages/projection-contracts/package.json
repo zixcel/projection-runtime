@@ -1,14 +1,15 @@
 {
-  "name": "@hathq/projection-runtime",
+  "name": "@hathq/projection-contracts",
   "version": "0.10.0",
+  "description": "Renderer-independent bounded projection, lineage and Scene contracts",
   "type": "module",
   "license": "Apache-2.0",
-  "description": "Bounded read-only producer execution and disposable durable projection publication",
   "engines": {
     "node": ">=22"
   },
   "files": [
     "src",
+    "contract.json",
     "README.md",
     "LICENSE",
     "NOTICE",
@@ -16,16 +17,23 @@
   ],
   "exports": {
     ".": {
-      "types": "./src/runtime.d.mts",
-      "import": "./src/runtime.mjs"
+      "types": "./src/index.d.mts",
+      "import": "./src/index.mjs"
     },
-    "./store": {
-      "types": "./src/store.d.mts",
-      "import": "./src/store.mjs"
+    "./client": {
+      "types": "./src/client.d.mts",
+      "import": "./src/client.mjs"
+    }
+  },
+  "imports": {
+    "#hash": {
+      "browser": "./src/hash-browser.mjs",
+      "default": "./src/hash-node.mjs"
     }
   },
   "dependencies": {
-    "@hathq/projection-contracts": "0.10.0"
+    "ohash": "2.0.11",
+    "@zixcel/interaction": "0.10.1"
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",
@@ -33,13 +41,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zixcel/projection-runtime.git"
+    "url": "git+https://github.com/zixcel/projection-runtime.git",
+    "directory": "packages/projection-contracts"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
-  "types": "./src/runtime.d.mts",
+  "types": "./src/index.d.mts",
   "devDependencies": {
     "typescript": "5.9.3",
     "@types/node": "24.12.0"

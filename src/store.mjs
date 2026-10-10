@@ -5,12 +5,14 @@ import path from 'node:path'
 import {fileURLToPath} from 'node:url'
 import {spawnSync} from 'node:child_process'
 import {bounds,check,fail,token} from './common.mjs'
+import {privateDirectory,privateFile} from './private-files.mjs'
 const helper=fileURLToPath(new URL('./store-process.mjs',import.meta.url))
 export class FileProjectionStore {
   #directory
   constructor(directory){this.#directory=path.resolve(directory)}
   static create(directory,limits={}){
     check(process.platform==='linux','ProjectionStoreUnsupported')
+    privateDirectory(path.dirname(path.resolve(directory)))
     const store=new FileProjectionStore(directory)
     // Caller supplies an existing private parent. Never implicitly initializes on read.
     fs.mkdirSync(store.#directory,{mode:0o700})
@@ -26,10 +28,11 @@ export class FileProjectionStore {
     const remaining=deadline===null?10000:deadline-Date.now()
     check(remaining>0,'ProjectionExecutionTimeout')
     const lock=path.join(this.#directory,'lock')
-    try{check(fs.lstatSync(this.#directory).isDirectory()&&fs.lstatSync(lock).isFile(),'ProjectionStoreCorrupt')}
+    try{privateDirectory(this.#directory);privateFile(fs.lstatSync(lock))}
     catch(e){if(e.code==='ENOENT')fail('ProjectionUnavailable');throw e}
     // Pass a pre-opened existing lock FD: flock can never create a missing file.
     const fd=fs.openSync(lock,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW)
+    try{privateFile(fs.fstatSync(fd))}catch(error){fs.closeSync(fd);throw error}
     let result
     const mode=['read','inspect','repair','begin'].includes(operation)?'--shared':'--exclusive'
     // Short reads/publications serialize within a bounded kernel wait. Attempt
@@ -57,12 +60,12 @@ export class FileProjectionStore {
     return ()=>{if(closed)return;closed=true;clearTimeout(timer);watcher.close()}
   }
   async withAttempt(id,operation){
-    token(id);let stripe=0;for(const byte of Buffer.from(id))stripe=(stripe*31+byte)%16
+    token(id);privateDirectory(this.#directory);let stripe=0;for(const byte of Buffer.from(id))stripe=(stripe*31+byte)%16
     let fd
     try{fd=fs.openSync(path.join(this.#directory,`attempt-${stripe}`),fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW)}
     catch(error){if(error.code==='ENOENT')fail('ProjectionUnavailable');throw error}
     try{
-      check(fs.fstatSync(fd).isFile(),'ProjectionStoreCorrupt')
+      privateFile(fs.fstatSync(fd))
       const result=spawnSync('/usr/bin/flock',['--exclusive','--nonblock','--conflict-exit-code','73','3'],{stdio:['ignore','pipe','pipe',fd],timeout:1000})
       if(result.status===73)fail('ProjectionStoreBusy')
       check(!result.error&&result.status===0,'ProjectionUnavailable')
