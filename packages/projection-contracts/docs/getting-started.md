@@ -1,29 +1,23 @@
 # Using @hathq/projection-contracts
 
-Share a precise contract for view snapshots, revisions and interactions between a producer and a renderer.
+Install the published npm package and import producer APIs from the root, or
+browser validation from `@hathq/projection-contracts/client`. See the
+[typed producer and Scene example](../README.md).
 
-## Before you start
+The application supplies exact owner-visible revisions and accepted access
+references. Projection data never grants authority, chooses a latest revision
+or mutates canonical sources. Keep missing source and unavailable rebuild
+results explicit.
 
-The producer owns application meaning and authority; these contracts describe display data and interaction references.
-
-## First steps
-
-Make the exact declared dependency artifacts available before installation. Local archives are excluded from Git; registry publication remains pending.
-
-Run from the repository root:
+For development, install and test from the consolidated repository root:
 
 ```sh
-pnpm install --frozen-lockfile
-pnpm test
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm -r --include-workspace-root typecheck
+pnpm -r --include-workspace-root test
 ```
 
-## How to assess the result
-
-- Validate a bounded view snapshot.
-- Keep action references tied to the accepted source revision.
-
-A passing source-level check establishes only what that check observes. Keep missing configuration, unavailable services and unverified deployment paths visible.
-
-## Continue reading
-
-[Repository overview](../README.md)
+The root and contract manifests use public registry versions; numeric workspace
+linking is solely a development convenience. Legal documents stay alongside the
+package. CI, repository identity and disclosure policy belong to the repository
+root.
